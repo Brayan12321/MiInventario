@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "Registrarse";
+}
+
+<style>
+    .register-container {
+        background: #0a0a0a;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .register-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 20px;
+        padding: 50px 40px;
+        max-width: 450px;
+        width: 100%;
+    }
+
+    .register-card .logo {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .register-card .logo h1 {
+        color: #fff;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .register-card .logo h1 span {
+        color: #ff0044;
+    }
+
+    .register-card .logo p {
+        color: rgba(255,255,255,0.3);
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+
+    .register-card .form-group {
+        margin-bottom: 20px;
+    }
+
+    .register-card label {
+        color: rgba(255,255,255,0.6);
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .register-card .form-control {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        color: #fff;
+        padding: 14px 18px;
+        width: 100%;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .register-card .form-control:focus {
+        outline: none;
+        border-color: #ff0044;
+        box-shadow: 0 0 0 4px rgba(255,0,68,0.1);
+        background: rgba(255,255,255,0.08);
+    }
+
+    .register-card .form-control::placeholder {
+        color: rgba(255,255,255,0.2);
+    }
+
+    .btn-register {
+        background: linear-gradient(135deg, #ff0044, #ff6b35);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: 16px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 40px rgba(255,0,68,0.3);
+    }
+
+    .register-footer {
+        text-align: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .register-footer a {
+        color: rgba(255,255,255,0.4);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .register-footer .login-link {
+        color: #ff0044;
+        font-weight: 600;
+    }
+
+    .register-footer .login-link:hover {
+        text-decoration: underline;
+    }
+
+    .alert-custom {
+        padding: 12px 18px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-danger-custom {
+        background: rgba(255,0,68,0.1);
+        border: 1px solid rgba(255,0,68,0.2);
+        color: #ff6b6b;
+    }
+</style>
+
+<div class="register-container">
+    <div class="register-card">
+        <div class="logo">
+            <h1>Crear <span>Cuenta</span></h1>
+            <p>Regístrate para comenzar</p>
+        </div>
+
+        @if (ViewData.ModelState != null && !ViewData.ModelState.IsValid)
+        {
+            <div class="alert-custom alert-danger-custom">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            </div>
+        }
+
+        <form method="post" action="/Account/Register">
+            <div class="form-group">
+                <label for="Nombre">
+                    <i class="bi bi-person me-1"></i> Nombre completo
+                </label>
+                <input type="text" id="Nombre" name="Nombre" class="form-control" 
+                       placeholder="Tu nombre" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Email">
+                    <i class="bi bi-envelope me-1"></i> Email
+                </label>
+                <input type="email" id="Email" name="Email" class="form-control" 
+                       placeholder="tu@email.com" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Contrasena">
+                    <i class="bi bi-lock me-1"></i> Contraseña
+                </label>
+                <input type="password" id="Contrasena" name="Contrasena" class="form-control" 
+                       placeholder="Mínimo 6 caracteres" required />
+            </div>
+
+            <div class="form-group">
+                <label for="ConfirmarContrasena">
+                    <i class="bi bi-shield-lock me-1"></i> Confirmar contraseña
+                </label>
+                <input type="password" id="ConfirmarContrasena" name="ConfirmarContrasena" class="form-control" 
+                       placeholder="Repite tu contraseña" required />
+            </div>
+
+            <button type="submit" class="btn-register">
+                <i class="bi bi-person-plus me-2"></i> Registrarse
+            </button>
+        </form>
+
+        <div class="register-footer">
+            <span style="color: rgba(255,255,255,0.3);">¿Ya tienes cuenta?</span>
+            <a asp-action="Login" class="login-link">Inicia sesión</a>
+        </div>
+    </div>
+</div>

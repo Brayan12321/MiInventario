@@ -1,0 +1,119 @@
+﻿@model IEnumerable<LOGIN.Models.CarritoItem>
+
+@{
+    ViewData["Title"] = "Checkout";
+    var total = ViewBag.Total as decimal? ?? 0;
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold mb-4">
+                <i class="bi bi-credit-card"></i> Finalizar Compra
+            </h1>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-receipt"></i> Resumen del pedido
+                    </h5>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th class="text-end">Precio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Producto?.Nombre</td>
+                                            <td>@item.Cantidad</td>
+                                            <td class="text-end">@((item.Cantidad * (item.Producto?.Precio ?? 0)).ToString("C"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fw-bold">
+                                        <td colspan="2" class="text-end">Total:</td>
+                                        <td class="text-end text-primary fs-5">@total.ToString("C")</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+
+                    <hr />
+
+                    <form asp-action="ConfirmarPedido" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-geo-alt"></i> Dirección de envío
+                            </label>
+                            <input type="text" name="direccion" class="form-control" 
+                                   placeholder="Calle, número, ciudad, departamento" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-credit-card"></i> Método de pago
+                            </label>
+                            <select name="metodoPago" class="form-select" required>
+                                <option value="">Selecciona...</option>
+                                <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                                <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+                                <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                                <option value="Pago en Efectivo">Pago en Efectivo (contra entrega)</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-3 mt-4">
+                            <a asp-action="Carrito" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Volver
+                            </a>
+                            <button type="submit" class="btn btn-gradient flex-grow-1" id="confirmarBtn">
+                                <i class="bi bi-check-circle"></i> Confirmar pedido
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.75rem 2rem;
+        transition: all 0.3s;
+    }
+    .btn-gradient:hover {
+        transform: scale(1.02);
+        color: white;
+    }
+    .card {
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+</style>
+
+<script>
+    document.getElementById('confirmarBtn')?.addEventListener('click', function(e) {
+        if (!confirm('¿Confirmar tu pedido?')) {
+            e.preventDefault();
+        } else {
+            this.disabled = true;
+            this.innerHTML = '<i class="bi bi-hourglass-split"></i> Procesando...';
+        }
+    });
+</script>

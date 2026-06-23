@@ -1,0 +1,180 @@
+﻿@model IEnumerable<LOGIN.Models.CarritoItem>
+
+@{
+    ViewData["Title"] = "Carrito de Compras";
+    var total = ViewBag.Total as decimal? ?? 0;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold">
+            <i class="bi bi-cart3"></i> Mi Carrito
+        </h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Seguir comprando
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr data-item-id="@item.Id">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-box-seam me-3" style="font-size: 1.5rem; color: #667eea;"></i>
+                                    <div>
+                                        <div class="fw-bold">@item.Producto?.Nombre</div>
+                                        <small class="text-muted">@item.Producto?.Descripcion</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@(item.Producto?.Precio.ToString("C") ?? "Bs 0.00")</td>
+                            <td>
+                                <div class="input-group" style="width: 120px;">
+                                    <button class="btn btn-outline-secondary btn-sm btn-cantidad" data-action="minus" data-id="@item.Id">-</button>
+                                    <input type="number" class="form-control form-control-sm text-center cantidad-input" 
+                                           data-id="@item.Id" value="@item.Cantidad" min="1" max="99" />
+                                    <button class="btn btn-outline-secondary btn-sm btn-cantidad" data-action="plus" data-id="@item.Id">+</button>
+                                </div>
+                            </td>
+                            <td class="subtotal">@((item.Cantidad * (item.Producto?.Precio ?? 0)).ToString("C"))</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm btn-eliminar" data-id="@item.Id">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="table-light fw-bold">
+                        <td colspan="3" class="text-end">Total:</td>
+                        <td class="text-primary fs-4" id="totalCarrito">@total.ToString("C")</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+            <a asp-action="Checkout" class="btn btn-gradient btn-lg">
+                <i class="bi bi-credit-card"></i> Proceder al pago
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-cart-x" style="font-size: 4rem; color: #dee2e6;"></i>
+            <h3 class="mt-3">Tu carrito está vacío</h3>
+            <p class="text-muted">¡Explora nuestros productos y encuentra lo que necesitas!</p>
+            <a asp-action="Index" class="btn btn-gradient">
+                <i class="bi bi-shop"></i> Ir a la tienda
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.75rem 2rem;
+        transition: all 0.3s;
+    }
+    .btn-gradient:hover {
+        transform: scale(1.05);
+        color: white;
+    }
+    .table tbody tr {
+        transition: all 0.3s;
+    }
+    .table tbody tr:hover {
+        background-color: rgba(102, 126, 234, 0.05);
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function actualizarCantidad(itemId, cantidad) {
+            $.post('/Tienda/ActualizarCantidad', { itemId: itemId, cantidad: cantidad })
+                .done(function(response) {
+                    if (response.success) {
+                        if (response.itemRemoved) {
+                            location.reload();
+                        } else {
+                            // Actualizar subtotal de la fila
+                            var row = $('tr[data-item-id="' + itemId + '"]');
+                            row.find('.subtotal').text(response.subtotal.toFixed(2));
+                            // Actualizar total
+                            $('#totalCarrito').text(response.total.toFixed(2));
+                            // Actualizar contador del carrito
+                            updateCartBadge(response.count);
+                        }
+                    } else {
+                        alert(response.message || 'Error al actualizar');
+                    }
+                })
+                .fail(function() {
+                    alert('Error al actualizar el carrito');
+                });
+        }
+
+        function updateCartBadge(count) {
+            $('.badge.bg-danger').remove();
+            if (count > 0) {
+                $('.btn-gradient.position-relative').append(
+                    '<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">' + count + '</span>'
+                );
+            }
+        }
+
+        // Botones + y -
+        $('.btn-cantidad').click(function() {
+            var id = parseInt($(this).data('id'));
+            var input = $('.cantidad-input[data-id="' + id + '"]');
+            var cantidad = parseInt(input.val());
+            
+            if ($(this).data('action') === 'plus') {
+                cantidad++;
+            } else {
+                cantidad--;
+            }
+            
+            if (cantidad < 1) return;
+            actualizarCantidad(id, cantidad);
+        });
+
+        // Input manual
+        $('.cantidad-input').change(function() {
+            var id = parseInt($(this).data('id'));
+            var cantidad = parseInt($(this).val());
+            if (isNaN(cantidad) || cantidad < 1) cantidad = 1;
+            actualizarCantidad(id, cantidad);
+        });
+
+        // Eliminar
+        $('.btn-eliminar').click(function() {
+            var id = parseInt($(this).data('id'));
+            if (confirm('¿Eliminar este producto del carrito?')) {
+                actualizarCantidad(id, 0);
+            }
+        });
+    });
+</script>

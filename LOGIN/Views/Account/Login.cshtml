@@ -1,0 +1,245 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<style>
+    .login-container {
+        background: #0a0a0a;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .login-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 20px;
+        padding: 50px 40px;
+        max-width: 450px;
+        width: 100%;
+    }
+
+    .login-card .logo {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .login-card .logo h1 {
+        color: #fff;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .login-card .logo h1 span {
+        color: #ff0044;
+    }
+
+    .login-card .logo p {
+        color: rgba(255,255,255,0.3);
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+
+    .login-card .form-group {
+        margin-bottom: 20px;
+    }
+
+    .login-card label {
+        color: rgba(255,255,255,0.6);
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .login-card .form-control {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        color: #fff;
+        padding: 14px 18px;
+        width: 100%;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .login-card .form-control:focus {
+        outline: none;
+        border-color: #ff0044;
+        box-shadow: 0 0 0 4px rgba(255,0,68,0.1);
+        background: rgba(255,255,255,0.08);
+    }
+
+    .login-card .form-control::placeholder {
+        color: rgba(255,255,255,0.2);
+    }
+
+    .login-card .form-check {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 15px 0;
+    }
+
+    .login-card .form-check input[type="checkbox"] {
+        accent-color: #ff0044;
+        width: 18px;
+        height: 18px;
+    }
+
+    .login-card .form-check label {
+        color: rgba(255,255,255,0.4);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .btn-login {
+        background: linear-gradient(135deg, #ff0044, #ff6b35);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: 16px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 40px rgba(255,0,68,0.3);
+    }
+
+    .login-footer {
+        text-align: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .login-footer a {
+        color: rgba(255,255,255,0.4);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .login-footer .register-link {
+        color: #ff0044;
+        font-weight: 600;
+    }
+
+    .login-footer .register-link:hover {
+        text-decoration: underline;
+    }
+
+    .alert-custom {
+        padding: 12px 18px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-danger-custom {
+        background: rgba(255,0,68,0.1);
+        border: 1px solid rgba(255,0,68,0.2);
+        color: #ff6b6b;
+    }
+
+    .alert-success-custom {
+        background: rgba(6,214,160,0.1);
+        border: 1px solid rgba(6,214,160,0.2);
+        color: #06d6a0;
+    }
+
+    .credenciales-info {
+        background: rgba(255,0,68,0.05);
+        border: 1px solid rgba(255,0,68,0.1);
+        border-radius: 12px;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+    }
+
+    .credenciales-info small {
+        color: rgba(255,255,255,0.4);
+        font-size: 0.8rem;
+    }
+
+    .credenciales-info strong {
+        color: rgba(255,255,255,0.6);
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo">
+            <h1>Mi <span>Inventario</span></h1>
+            <p>Inicia sesión para continuar</p>
+        </div>
+
+        @if (TempData["Mensaje"] != null)
+        {
+            <div class="alert-custom alert-success-custom">
+                <i class="bi bi-check-circle-fill"></i>
+                @TempData["Mensaje"]
+            </div>
+        }
+
+        @if (ViewData.ModelState != null && !ViewData.ModelState.IsValid)
+        {
+            <div class="alert-custom alert-danger-custom">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            </div>
+        }
+
+        <!-- Credenciales de prueba -->
+        <div class="credenciales-info">
+            <small>
+                <i class="bi bi-info-circle me-1"></i>
+                <strong>Admin:</strong> admin@gmail.com / admin123 &nbsp;|&nbsp;
+                <strong>Usuario:</strong> brayan@gmail.com / 123456
+            </small>
+        </div>
+
+        <form method="post" action="/Account/Login">
+            <div class="form-group">
+                <label for="Email">
+                    <i class="bi bi-envelope me-1"></i> Email
+                </label>
+                <input type="email" id="Email" name="Email" class="form-control" 
+                       placeholder="tu@email.com" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Contrasena">
+                    <i class="bi bi-lock me-1"></i> Contraseña
+                </label>
+                <input type="password" id="Contrasena" name="Contrasena" class="form-control" 
+                       placeholder="••••••••" required />
+            </div>
+
+            <div class="form-check">
+                <input type="checkbox" id="Recordarme" name="Recordarme" value="true" />
+                <label for="Recordarme">Recordarme</label>
+            </div>
+
+            <button type="submit" class="btn-login">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Ingresar
+            </button>
+        </form>
+
+        <div class="login-footer">
+            <span style="color: rgba(255,255,255,0.3);">¿No tienes cuenta?</span>
+            <a asp-action="Register" class="register-link">Regístrate</a>
+        </div>
+    </div>
+</div>

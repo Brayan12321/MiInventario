@@ -1,0 +1,118 @@
+﻿@model LOGIN.Models.Producto
+
+@{
+    ViewData["Title"] = "Detalle del Producto";
+}
+
+<style>
+    .details-container {
+        background: #0a0a0a;
+        min-height: 100vh;
+        padding: 40px 0;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .details-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
+        padding: 40px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .details-card .icon {
+        text-align: center;
+        font-size: 4rem;
+        color: #ff0044;
+        margin-bottom: 20px;
+    }
+
+    .details-card h1 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .details-card h1 span {
+        color: #ff0044;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-row .label {
+        color: rgba(255,255,255,0.4);
+        font-weight: 500;
+    }
+
+    .info-row .value {
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .info-row .value.price {
+        color: #ff0044;
+    }
+
+    .btn-back {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.4);
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .btn-back:hover {
+        border-color: rgba(255,255,255,0.2);
+        color: #fff;
+    }
+</style>
+
+<div class="details-container">
+    <div class="container">
+        <div class="details-card">
+            <div class="icon">
+                <i class="bi bi-box-seam"></i>
+            </div>
+            <h1><span>@Model.Nombre</span></h1>
+
+            <div class="info-row">
+                <span class="label">Descripción</span>
+                <span class="value">@(Model.Descripcion ?? "Sin descripción")</span>
+            </div>
+
+            <div class="info-row">
+                <span class="label">Precio</span>
+                <span class="value price">Bs @Model.Precio.ToString("N0")</span>
+            </div>
+
+            <div class="info-row">
+                <span class="label">Cantidad en stock</span>
+                <span class="value">@Model.Cantidad unidades</span>
+            </div>
+
+            <a asp-action="Index" class="btn-back">
+                <i class="bi bi-arrow-left me-2"></i>Volver a la lista
+            </a>
+        </div>
+    </div>
+</div>

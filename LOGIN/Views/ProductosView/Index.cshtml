@@ -1,0 +1,368 @@
+﻿@model IEnumerable<LOGIN.Models.Producto>
+
+@{
+    ViewData["Title"] = "Administrar Productos";
+}
+
+<style>
+    .admin-container {
+        background: #0a0a0a;
+        min-height: 100vh;
+        padding: 40px 0;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .admin-header h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -1px;
+        color: #1a3a5c;
+        text-shadow: 0 0 30px rgba(26,58,92,0.1);
+    }
+
+    .admin-header h1 span {
+        color: #8b0000;
+    }
+
+    .admin-header h1 i {
+        color: #1a3a5c;
+        margin-right: 10px;
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, #1a3a5c, #0d1f30);
+        color: #c0d0e0;
+        border: 1px solid #2a4a6c;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .btn-create:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px rgba(26,58,92,0.15);
+        color: #fff;
+        border-color: #3a5a7c;
+    }
+
+    .table-container {
+        background: rgba(10, 10, 10, 0.98);
+        border: 1px solid rgba(26,58,92,0.15);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+    }
+
+    .table {
+        color: #c0d0e0;
+        margin: 0;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table thead {
+        background: rgba(10, 10, 10, 0.9);
+        border-bottom: 2px solid rgba(26,58,92,0.2);
+    }
+
+    .table thead th {
+        color: #4a7a9c;
+        font-weight: 700;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding: 18px 20px;
+        border: none;
+    }
+
+    .table tbody td {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(26,58,92,0.05);
+        vertical-align: middle;
+        font-size: 0.9rem;
+        color: #8aaec0;
+    }
+
+    .table tbody tr {
+        background: rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .table tbody tr:hover {
+        background: rgba(26,58,92,0.08);
+        border-left: 2px solid #1a3a5c;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .product-name {
+        font-weight: 700;
+        color: #6a9ac0;
+        font-size: 0.95rem;
+        letter-spacing: -0.2px;
+    }
+
+    .product-desc-cell {
+        color: #5a7a8a;
+        font-size: 0.8rem;
+        font-weight: 400;
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .product-price-cell {
+        color: #8b0000;
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: -0.3px;
+    }
+
+    .stock-badge-cell {
+        padding: 5px 16px;
+        border-radius: 50px;
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        display: inline-block;
+        border: 1px solid transparent;
+    }
+
+    .stock-badge-cell.available {
+        background: rgba(26, 58, 92, 0.1);
+        color: #4a7a9c;
+        border-color: rgba(26, 58, 92, 0.08);
+    }
+
+    .stock-badge-cell.low {
+        background: rgba(139, 0, 0, 0.08);
+        color: #8b0000;
+        border-color: rgba(139, 0, 0, 0.06);
+    }
+
+    .stock-badge-cell.empty {
+        background: rgba(80, 0, 0, 0.1);
+        color: #5a0000;
+        border-color: rgba(80, 0, 0, 0.06);
+    }
+
+    /* ⭐ BOTONES ACCIÓN - AZUL OSCURO */
+    .btn-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .btn-action {
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 0.6rem;
+        font-weight: 700;
+        border: 1px solid rgba(26,58,92,0.15);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        background: rgba(26, 58, 92, 0.1);
+        color: #4a7a9c;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        background: rgba(26, 58, 92, 0.2);
+        border-color: #1a3a5c;
+        color: #6a9ac0;
+        box-shadow: 0 0 20px rgba(26,58,92,0.05);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: rgba(26,58,92,0.03);
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        color: rgba(26,58,92,0.08);
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    .empty-state p {
+        color: rgba(26,58,92,0.04);
+        font-size: 0.9rem;
+    }
+
+    .alert-custom {
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+        border: 1px solid transparent;
+    }
+
+    .alert-success-custom {
+        background: rgba(26, 58, 92, 0.04);
+        border-color: rgba(26, 58, 92, 0.06);
+        color: #4a7a9c;
+    }
+
+    .alert-danger-custom {
+        background: rgba(139, 0, 0, 0.04);
+        border-color: rgba(139, 0, 0, 0.06);
+        color: #8b0000;
+    }
+
+    @@media (max-width: 768px) {
+        .admin-header {
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .btn-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-action {
+            justify-content: center;
+        }
+
+        .admin-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .product-desc-cell {
+            max-width: 80px;
+        }
+    }
+</style>
+
+<div class="admin-container">
+    <div class="container">
+        <div class="admin-header">
+            <h1><i class="bi bi-gear me-2"></i>Administrar <span>Productos</span></h1>
+            <a asp-action="Create" class="btn-create">
+                <i class="bi bi-plus-lg"></i> Nuevo Producto
+            </a>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert-custom alert-success-custom">
+                <i class="bi bi-check-circle-fill"></i>
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert-custom alert-danger-custom">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                @TempData["Error"]
+            </div>
+        }
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var producto in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="product-name">@producto.Nombre</div>
+                                </td>
+                                <td>
+                                    <div class="product-desc-cell">@(producto.Descripcion ?? "Sin descripción")</div>
+                                </td>
+                                <td class="product-price-cell">Bs @producto.Precio.ToString("N0")</td>
+                                <td>
+                                    @{
+                                        var stockClass = producto.Cantidad > 5 ? "available" : (producto.Cantidad > 0 ? "low" : "empty");
+                                        var stockText = producto.Cantidad > 5 ? "Disponible" : (producto.Cantidad > 0 ? "Pocas unidades" : "Agotado");
+                                    }
+                                    <span class="stock-badge-cell @stockClass">● @stockText (@producto.Cantidad)</span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-actions">
+                                        <a asp-action="Details" asp-route-id="@producto.Id" class="btn-action details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@producto.Id" class="btn-action edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@producto.Id" class="btn-action delete">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-box-seam"></i>
+                <h3>No hay productos</h3>
+                <p>Haz clic en "Nuevo Producto" para agregar tu primer producto.</p>
+            </div>
+        }
+    </div>
+</div>
